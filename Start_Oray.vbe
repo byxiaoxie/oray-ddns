@@ -1,0 +1,1 @@
+CreateObject("WScript.Shell").Run "cmd /c I:\oray.bat",0
