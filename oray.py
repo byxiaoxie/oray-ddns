@@ -1,6 +1,7 @@
 # Update Oray IP
 #
 # Update Log:
+# 2021-12-4 09:17:27 - Fix fake death state
 #
 # ByXiaoXie   Www.ByXiaoXie.Com
 
@@ -33,13 +34,10 @@ def print_log(str):
     with open("oray.log","a") as file:
             file.write(now + "：" + str + "\n")
 
-def GetIp(mod):
+def GetIp():
     try:
-        if mod:
-            req = request.Request("http://ipinfo.io/ip")
-        else:
-            req = request.Request("http://ip.3322.net")
-        conn = request.urlopen(req).read().decode('GBK')
+        req = request.Request("http://ipinfo.io/ip")
+        conn = request.urlopen(req,timeout=10).read().decode('GBK')
         ipaddr = re.search('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}',conn)
         ipaddress = ipaddr.group()
         return ipaddress
@@ -50,21 +48,15 @@ def GetIp(mod):
 def UpdateIP():
     try:
         while True:
-            BoolGetIp = True
-            ipaddress = GetIp(BoolGetIp)
+            ipaddress = GetIp()
             if ipaddress != "":
                 break
             else:
-                if BoolGetIp:
-                    BoolGetIp = False
-                else:
-                    BoolGetIp = True
                 time.sleep(5)
-                ipaddress = GetIp(BoolGetIp)
-
+                ipaddress = GetIp()
         url = "http://ddns.oray.com/ph/update?hostname=" + domainname + "&myip=" + ipaddress
         req = request.Request(url,headers=headers)
-        getpost = request.urlopen(req).read().decode('utf-8')
+        getpost = request.urlopen(req,timeout=10).read().decode('utf-8')
         print_log(getpost)
         
         return True
